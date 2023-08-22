@@ -1,0 +1,28 @@
+Basic Data
+3,2,1,2,1
+Nodal Data
+1,0,0
+2,3,0
+3,3,3
+
+
+Element Data
+1,3,1,1,2
+2,1,2,1,3
+
+Material Data
+1,4.2e08,1.05e07
+1,2.1e08,0.0
+
+Boundary Data
+2,0,1,6,0.0
+3,0,1,2,0.0
+
+
+Force Data
+1,0,2,2,-500e03
+
+Step
+0,1,1
+
+End

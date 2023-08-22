@@ -1,0 +1,27 @@
+function [Ke, Fe, jacob, stress, strain, ivar, reac] = element_1(material_data, X, disp, stress, ivar, gauss_point)
+% analysis_switch = 1: form element stiffness and rhs
+Ke(4,4)=0;
+Fe(4)=0;
+jacob=1;
+D=getD_1(material_data, X, disp, stress, ivar);
+EA=D(1);
+x1=X(1);
+y1=X(2);
+x2=X(4);
+y2=X(5);
+u1=disp(1);
+v1=disp(2);
+u2=disp(3);
+v2=disp(4);
+L=sqrt((x2-x1)^2+(y2-y1)^2);
+theta=atan((y2-y1)/(x2-x1));
+c=cos(theta);s=sin(theta);
+T = [c s 0 0;-s c 0 0;0 0 c s;0 0 -s c];
+stiff=EA/L;
+KL=[stiff 0 -stiff 0;0 0 0 0;-stiff 0 stiff 0;0 0 0 0];
+Ke= T'*KL*T;
+reac=Ke*[u1;v1;u2;v2];
+disp2=u2*c+v2*s;
+disp1=u1*c+v1*s;
+strain=(disp2-disp1); %elongation is defined as strain
+stress=EA*strain/L; %force is stress

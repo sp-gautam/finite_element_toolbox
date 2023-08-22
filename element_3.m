@@ -1,0 +1,34 @@
+function [Ke, Fe, jacob, stress, strain, ivar, reac] = element_3(material_data, X, disp, stress, ivar, gauss_point)
+% combined beam truss element
+% analysis_switch = 1: form element stiffness and rhs
+Ke(6,6)=0;
+Fe(6)=0;
+jacob=1;
+D=getD_1(material_data, X, disp, stress, ivar);
+EA=D(1);
+EI=D(2);
+x1=X(1);
+y1=X(2);
+x2=X(4);
+y2=X(5);
+u1=disp(1);
+v1=disp(2);
+theta1=disp(3);
+u2=disp(4);
+v2=disp(5);
+theta2=disp(6);
+L=sqrt((x2-x1)^2+(y2-y1)^2);
+KL([2 3 5 6],[2 3 5 6])=(EI/L^3)*[12 6*L -12 6*L;6*L 4*L^2 -6*L 2*L^2;-12 -6*L 12 -6*L;6*L 2*L^2 -6*L 4*L^2];
+KL([1 4],[1 4]) = (EA/L)*[1 -1;-1 1];
+theta=atan((y2-y1)/(x2-x1));
+c=cos(theta);s=sin(theta);
+T=zeros(6);
+t=[c s 0;-s c 0;0 0 1];
+T(1:3,1:3)=t;
+T(4:6,4:6)=t;
+Ke= T'*KL*T;
+reac=Ke*[u1;v1;theta1;u2;v2;theta2];
+disp2=u2*c+v2*s;
+disp1=u1*c+v1*s;
+strain=(disp2-disp1); %elongation is defined as strain
+stress=EA*strain/L; %force is stress
